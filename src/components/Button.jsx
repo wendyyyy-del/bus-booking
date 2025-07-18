@@ -1,11 +1,26 @@
-export default function Button({ children, onClick, type = "button" }) {
+// src/components/Button.jsx
+import React from "react";
+
+export default function Button({
+  text,
+  children,
+  onClick,
+  type = "button",
+  className = "",
+  disabled = false,
+}) {
   return (
     <button
       type={type}
-      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
       onClick={onClick}
+      disabled={disabled}
+      className={`
+        bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md transition
+        disabled:bg-blue-300 disabled:cursor-not-allowed
+        ${className}
+      `}
     >
-      {children}
+      {children || text}
     </button>
   );
 }

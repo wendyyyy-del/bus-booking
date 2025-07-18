@@ -6,34 +6,73 @@ import { login } from "../api";
 export default function Login() {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({ email: "", password: "" });
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const res = await login(formData);
-    console.log(res);
-    navigate("/");
+    setError(null);
+    setLoading(true);
+
+    try {
+      const res = await login(formData);
+      console.log(res);
+
+      // Assuming login returns success status or token
+      if (res.success) {
+        navigate("/");  // Redirect on successful login
+      } else {
+        setError(res.message || "Login failed. Please try again.");
+      }
+    } catch (err) {
+      setError("An error occurred. Please try again later.");
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-20">
-      <h2 className="text-2xl mb-4">Login</h2>
+    <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow-md">
+      <h2 className="text-3xl font-semibold mb-6 text-center">Login</h2>
+
+      {error && (
+        <div className="mb-4 text-red-600 bg-red-100 p-2 rounded">
+          {error}
+        </div>
+      )}
+
       <input
         name="email"
         type="email"
         placeholder="Email"
-        className="border p-2 w-full mb-4"
+        required
+        className="border p-3 w-full mb-4 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         value={formData.email}
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        onChange={handleChange}
+        autoComplete="email"
+        aria-label="Email"
       />
+
       <input
         name="password"
         type="password"
         placeholder="Password"
-        className="border p-2 w-full mb-4"
+        required
+        className="border p-3 w-full mb-6 rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
         value={formData.password}
-        onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+        onChange={handleChange}
+        autoComplete="current-password"
+        aria-label="Password"
       />
-      <Button type="submit">Login</Button>
+
+      <Button type="submit" className="w-full" disabled={loading}>
+        {loading ? "Logging in..." : "Login"}
+      </Button>
     </form>
   );
 }
