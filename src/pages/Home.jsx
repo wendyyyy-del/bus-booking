@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const images = [
   "https://images.pexels.com/photos/30661414/pexels-photo-30661414.jpeg",
@@ -13,7 +13,9 @@ const IMAGE_HEIGHT = 360;
 
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [adminDropdownOpen, setAdminDropdownOpen] = useState(false);
   const timeoutRef = useRef(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     timeoutRef.current = setTimeout(
@@ -22,6 +24,20 @@ export default function Home() {
     );
     return () => clearTimeout(timeoutRef.current);
   }, [currentIndex]);
+
+  const handleGuestStart = () => {
+    localStorage.setItem("isGuest", "true");
+    navigate("/bookingform");
+  };
+
+  const toggleAdminDropdown = () => {
+    setAdminDropdownOpen((open) => !open);
+  };
+
+  const handleAdminNavigate = (path) => {
+    setAdminDropdownOpen(false);
+    navigate(path);
+  };
 
   return (
     <section
@@ -86,21 +102,64 @@ export default function Home() {
         ))}
       </div>
 
-      {/* Main Content */}
+      {/* Main Headline */}
       <h1 className="text-4xl md:text-5xl font-heading text-blue-700 font-bold drop-shadow-sm mb-4 animate-fade-in">
         Welcome to <span className="text-orange-500">BusBooking Kenya</span>
       </h1>
       <p className="text-gray-700 text-lg max-w-xl mb-6 animate-fade-in delay-100">
-        Your trusted platform for booking bus tickets across Kenya — fast, easy,
-        and reliable.
+        Book bus or shuttle rides, select your seat, and pay online. Fast, secure, and reliable.
       </p>
 
-      <Link
-        to="/buses"
-        className="bg-blue-600 text-white px-6 py-3 rounded-full shadow-md hover:bg-orange-500 transition-all duration-300 ease-in-out hover:scale-105"
-      >
-        View Buses
-      </Link>
+      {/* Role Selection Buttons */}
+      <div className="flex flex-col md:flex-row gap-6 items-center justify-center mt-6 relative">
+        <button
+          onClick={handleGuestStart}
+          className="bg-orange-500 text-white px-6 py-3 rounded-full shadow-md hover:bg-orange-600 transition duration-300 hover:scale-105"
+          aria-label="Start booking as guest"
+        >
+          Start as Guest
+        </button>
+
+        <div>
+          <button
+            onClick={toggleAdminDropdown}
+            className="border border-blue-600 text-blue-600 px-6 py-3 rounded-full hover:bg-blue-600 hover:text-white transition duration-300 hover:scale-105"
+            aria-haspopup="true"
+            aria-expanded={adminDropdownOpen}
+            aria-label="Admin menu"
+          >
+            Admin
+          </button>
+
+          {adminDropdownOpen && (
+            <div
+              className="absolute right-0 mt-2 w-36 bg-white border border-gray-300 rounded-md shadow-lg z-50"
+              role="menu"
+              aria-label="Admin options"
+            >
+              <button
+                onClick={() => handleAdminNavigate("/login")}
+                className="block w-full text-left px-4 py-2 hover:bg-blue-600 hover:text-white"
+                role="menuitem"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => handleAdminNavigate("/register")}
+                className="block w-full text-left px-4 py-2 hover:bg-green-600 hover:text-white"
+                role="menuitem"
+              >
+                Register
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Info Note */}
+      <div className="mt-8 max-w-lg text-sm text-gray-600 text-center px-4">
+        Note: Guest sessions last for 15 minutes. After that, you may need to log in again.
+      </div>
     </section>
   );
 }

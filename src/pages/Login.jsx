@@ -18,11 +18,17 @@ export default function Login() {
       const res = await login(formData);
       console.log(res);
 
-      // Assuming login returns success status or token
-      if (res.success) {
-        navigate("/");  // Redirect on successful login
+      // Check if token exists in response (your backend returns token on success)
+      if (res.token) {
+        // Save token and user info in localStorage (for persistence)
+        localStorage.setItem("token", res.token);
+        localStorage.setItem("user", JSON.stringify(res.user));
+
+        // Redirect to homepage or dashboard
+        navigate("/");
       } else {
-        setError(res.message || "Login failed. Please try again.");
+        // Show error message from backend or generic fallback
+        setError(res.error || res.message || "Login failed. Please try again.");
       }
     } catch (err) {
       setError("An error occurred. Please try again later.");
@@ -33,15 +39,22 @@ export default function Login() {
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   return (
-    <form onSubmit={handleSubmit} className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow-md">
+    <form
+      onSubmit={handleSubmit}
+      className="max-w-md mx-auto mt-20 p-6 bg-white rounded shadow-md"
+      aria-label="Login form"
+    >
       <h2 className="text-3xl font-semibold mb-6 text-center">Login</h2>
 
       {error && (
-        <div className="mb-4 text-red-600 bg-red-100 p-2 rounded">
+        <div
+          role="alert"
+          className="mb-4 text-red-600 bg-red-100 p-2 rounded"
+        >
           {error}
         </div>
       )}

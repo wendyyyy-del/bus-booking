@@ -1,50 +1,70 @@
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000";
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"; // fallback to Flask default
 
+// Helper to handle fetch responses
+async function handleResponse(res) {
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.error || data.message || "API Error");
+  }
+  return data;
+}
+
+// Register a new user
 export const register = (data) =>
-  fetch(`${API_URL}/api/auth/register`, {
+  fetch(`${API_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
-  }).then((res) => res.json());
+  }).then(handleResponse);
 
+// Login user
 export const login = (data) =>
-  fetch(`${API_URL}/api/auth/login`, {
+  fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
-  }).then((res) => res.json());
+  }).then(handleResponse);
 
+// Fetch all buses (public)
 export const fetchBuses = () =>
-  fetch(`${API_URL}/api/buses`).then((res) => res.json());
+  fetch(`${API_URL}/buses`).then(handleResponse);
 
-// Optional: Fetch bookings for current logged-in user
-export const fetchBookings = () =>
-  fetch(`${API_URL}/api/bookings`, {
+// Fetch bookings for logged-in user (requires token)
+export const fetchBookings = (token) =>
+  fetch(`${API_URL}/bookings`, {
     headers: {
       "Content-Type": "application/json",
-      // Add auth token header if needed, e.g.
-      // Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${token}`,
     },
-  }).then((res) => res.json());
+  }).then(handleResponse);
 
-// Optional: Add a new booking
-export const addBooking = (bookingData) =>
-  fetch(`${API_URL}/api/bookings`, {
+// Add a new booking (requires token)
+export const addBooking = (bookingData, token) =>
+  fetch(`${API_URL}/bookings`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify(bookingData),
-  }).then((res) => res.json());
+  }).then(handleResponse);
 
-// Optional: Update a booking by ID
-export const updateBooking = (id, updateData) =>
-  fetch(`${API_URL}/api/bookings/${id}`, {
+// Update booking by ID (requires token)
+export const updateBooking = (id, updateData, token) =>
+  fetch(`${API_URL}/bookings/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
     body: JSON.stringify(updateData),
-  }).then((res) => res.json());
+  }).then(handleResponse);
 
-// Optional: Delete a booking by ID
-export const deleteBooking = (id) =>
-  fetch(`${API_URL}/api/bookings/${id}`, {
+// Delete booking by ID (requires token)
+export const deleteBooking = (id, token) =>
+  fetch(`${API_URL}/bookings/${id}`, {
     method: "DELETE",
-  }).then((res) => res.json());
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  }).then(handleResponse);
