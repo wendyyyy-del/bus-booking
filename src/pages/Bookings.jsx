@@ -4,7 +4,6 @@ export default function Bookings() {
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Simulate fetching bookings (replace with real API later)
   useEffect(() => {
     const dummyBookings = [
       {
@@ -25,7 +24,7 @@ export default function Bookings() {
       },
     ];
 
-    // Simulate network delay
+  
     setTimeout(() => {
       setBookings(dummyBookings);
       setLoading(false);

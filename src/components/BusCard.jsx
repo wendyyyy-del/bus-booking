@@ -8,53 +8,96 @@ export default function BusCard({ bus, onBook }) {
     return () => clearTimeout(timeout);
   }, []);
 
+  const imageUrl = bus.image_url
+    ? `http://localhost:5500${bus.image_url}`
+    : "https://via.placeholder.com/300x200?text=No+Image";
+
+  const handleBookClick = () => {
+    if (bus.availableSeats === 0) {
+      alert("Sorry, no seats available.");
+      return;
+    }
+
+    const seatsInput = prompt(
+      `How many seats do you want to book? (Available: ${bus.availableSeats})`,
+      "1"
+    );
+
+    const seats = parseInt(seatsInput, 10);
+
+    if (isNaN(seats) || seats <= 0) {
+      alert("❌ Invalid number of seats.");
+      return;
+    }
+
+    if (seats > bus.availableSeats) {
+      alert("❌ Not enough seats available.");
+      return;
+    }
+
+    onBook(bus.id, seats);
+  };
+
   return (
     <div
       className={`
-        bg-orange-100 border-2 border-orange-300 rounded-2xl shadow-lg p-6 text-gray-800
+        bg-white border border-gray-200 rounded-2xl shadow-md overflow-hidden
         transform transition-all duration-700 ease-in-out
-        ${animate ? "translate-x-0 opacity-100 rotate-0 scale-100" : "translate-x-20 opacity-0 rotate-3 scale-90"}
-        hover:shadow-2xl hover:scale-[1.07] hover:-rotate-2 hover:skew-y-1
-        cursor-pointer
+        ${animate
+          ? "translate-y-0 opacity-100 scale-100"
+          : "translate-y-8 opacity-0 scale-95"}
+        hover:shadow-lg hover:scale-105 hover:-rotate-1
       `}
-      style={{ perspective: 1000 }}
     >
-      <div className="mb-4">
-        <h2 className="text-2xl font-extrabold text-orange-700 animate-pulse">
-          {bus.name}
-        </h2>
-        <p className="text-sm text-gray-700">Route: {bus.route}</p>
-        <p className="text-sm text-gray-700">Departure: {bus.time}</p>
-      </div>
+      {/* Bus Image */}
+      <img
+        src={imageUrl}
+        alt={bus.name}
+        className="w-full h-48 object-cover"
+      />
 
-      <div className="space-y-1 mb-4">
-        <p className="text-sm">
-          Price:{" "}
-          <span className="font-semibold text-orange-800">KES {bus.price}</span>
+      <div className="p-4 space-y-2">
+        <h2 className="text-lg font-bold text-orange-700">{bus.name}</h2>
+        <p className="text-sm text-gray-600">
+          <span className="font-medium">Route:</span> {bus.route}
         </p>
-        <p className="text-sm">
-          Available Seats:{" "}
-          <span
-            className={`font-bold ${
-              bus.availableSeats === 0 ? "text-red-600" : "text-green-700"
-            }`}
-          >
-            {bus.availableSeats}
-          </span>
+        <p className="text-sm text-gray-600">
+          <span className="font-medium">Departure:</span> {bus.time || "TBA"}
         </p>
-      </div>
 
-      <button
-        onClick={() => onBook(bus.id)}
-        disabled={bus.availableSeats === 0}
-        className={`w-full px-4 py-2 rounded-md font-bold transition duration-300 ${
-          bus.availableSeats === 0
-            ? "bg-gray-400 cursor-not-allowed"
-            : "bg-orange-600 hover:bg-orange-700 text-white shadow-md hover:shadow-xl"
-        }`}
-      >
-        {bus.availableSeats === 0 ? "Fully Booked" : "Book Seat"}
-      </button>
+        <div className="space-y-1">
+          <p className="text-sm">
+            <span className="font-medium">Price:</span>{" "}
+            <span className="text-orange-800 font-semibold">
+              KES {bus.price || "N/A"}
+            </span>
+          </p>
+          <p className="text-sm">
+            <span className="font-medium">Seats Available:</span>{" "}
+            <span
+              className={`font-bold ${
+                bus.availableSeats === 0
+                  ? "text-red-600"
+                  : "text-green-700"
+              }`}
+            >
+              {bus.availableSeats ?? 0}
+            </span>
+          </p>
+        </div>
+
+        <button
+          onClick={handleBookClick}
+          disabled={bus.availableSeats === 0}
+          className={`w-full mt-3 px-4 py-2 rounded-lg font-semibold text-sm transition duration-300 ${
+            bus.availableSeats === 0
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-orange-600 hover:bg-orange-700 text-white shadow-sm hover:shadow-md"
+          }`}
+        >
+          {bus.availableSeats === 0 ? "Fully Booked" : "Book Seat"}
+        </button>
+      </div>
     </div>
   );
 }
