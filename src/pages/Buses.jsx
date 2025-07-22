@@ -27,7 +27,7 @@ export default function Buses() {
       return;
     }
 
-    fetch("http://localhost:5000/api/bookings", {
+    fetch("http://localhost:5500/api/bookings", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -1,8 +1,9 @@
-const API_URL = process.env.REACT_APP_API_URL || "http://localhost:5000"; // fallback to Flask default
+const API_URL = process.env.REACT_APP_API_URL || "http://127.0.0.1:5500/api";
+console.log("🌐 Using API URL:", API_URL);
 
 // Helper to handle fetch responses
 async function handleResponse(res) {
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     throw new Error(data.error || data.message || "API Error");
   }
@@ -68,3 +69,7 @@ export const deleteBooking = (id, token) =>
       Authorization: `Bearer ${token}`,
     },
   }).then(handleResponse);
+
+// Optional: health check / ping
+export const ping = () =>
+  fetch(`${API_URL}/ping`).then(handleResponse);
