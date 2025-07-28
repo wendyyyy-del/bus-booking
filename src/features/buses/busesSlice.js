@@ -17,7 +17,6 @@ export const fetchBuses = createAsyncThunk(
   }
 );
 
-// You can add other async thunks like addBus, updateBus, deleteBus here as needed
 
 const busesSlice = createSlice({
   name: "buses",
@@ -27,7 +26,6 @@ const busesSlice = createSlice({
     error: null,
   },
   reducers: {
-    // For example, update bus availability after a booking
     decrementSeatAvailability(state, action) {
       const busId = action.payload;
       const bus = state.buses.find((b) => b.id === busId);
@@ -35,7 +33,7 @@ const busesSlice = createSlice({
         bus.availableSeats -= 1;
       }
     },
-    // Add more reducers if needed
+    
   },
   extraReducers: (builder) => {
     builder

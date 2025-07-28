@@ -6,7 +6,6 @@ import {
   deleteBooking as deleteBookingApi,
 } from "../../api";
 
-// Fetch all bookings thunk
 export const fetchBookings = createAsyncThunk(
   "bookings/fetchBookings",
   async (_, { rejectWithValue }) => {
@@ -20,7 +19,6 @@ export const fetchBookings = createAsyncThunk(
   }
 );
 
-// Add booking thunk (if needed)
 export const addBooking = createAsyncThunk(
   "bookings/addBooking",
   async (bookingData, { rejectWithValue }) => {
@@ -34,7 +32,6 @@ export const addBooking = createAsyncThunk(
   }
 );
 
-// Update booking thunk (if needed)
 export const updateBooking = createAsyncThunk(
   "bookings/updateBooking",
   async ({ id, updateData }, { rejectWithValue }) => {
@@ -48,14 +45,13 @@ export const updateBooking = createAsyncThunk(
   }
 );
 
-// Delete booking thunk
 export const deleteBooking = createAsyncThunk(
   "bookings/deleteBooking",
   async (id, { rejectWithValue }) => {
     try {
       const response = await deleteBookingApi(id);
       if (!response.success) return rejectWithValue(response.message);
-      return id; // return deleted booking id
+      return id; 
     } catch (err) {
       return rejectWithValue(err.message);
     }
@@ -76,7 +72,7 @@ const bookingsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Fetch bookings
+     
       .addCase(fetchBookings.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -90,7 +86,6 @@ const bookingsSlice = createSlice({
         state.error = action.payload || "Failed to fetch bookings";
       })
 
-      // Add booking
       .addCase(addBooking.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -104,7 +99,6 @@ const bookingsSlice = createSlice({
         state.error = action.payload || "Failed to add booking";
       })
 
-      // Update booking
       .addCase(updateBooking.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -119,7 +113,6 @@ const bookingsSlice = createSlice({
         state.error = action.payload || "Failed to update booking";
       })
 
-      // Delete booking
       .addCase(deleteBooking.pending, (state) => {
         state.loading = true;
         state.error = null;
