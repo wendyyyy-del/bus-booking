@@ -35,16 +35,40 @@ export default function BookingForm() {
     setSuccessMessage("");
 
     try {
-      const response = await axios.post("http://localhost:5000/bookings", formData);
+      const token = localStorage.getItem("token");
+      if (!token) {
+        setError("You must be logged in to make a booking.");
+        return;
+      }
+
+      const busId = 1; // 🔧 Replace this with actual logic if needed
+
+      const response = await axios.post(
+        "http://localhost:5500/api/bookings/", // 🔁 fixed: added trailing slash
+        {
+          bus_id: busId,
+          seats: 1
+      },
+
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       console.log("Booking submitted:", response.data);
       setSuccessMessage("✅ Booking info submitted!");
 
-      // Simulate bus info (replace this with real data later)
       const bookingDetails = {
         ...formData,
-        busName: formData.vehicleType === "shuttle" ? "Transline Shuttle" : "Modern Bus",
+        busName:
+          formData.vehicleType === "shuttle"
+            ? "Transline Shuttle"
+            : "Modern Bus",
         route: `${formData.from} → ${formData.to}`,
-        seatNo: "A12", // Optional: generate or get from backend
+        seatNo: "A12",
         price: formData.vehicleType === "shuttle" ? "KES 500" : "KES 700",
       };
 
@@ -53,7 +77,9 @@ export default function BookingForm() {
       }, 1500);
     } catch (err) {
       console.error("Booking error:", err);
-      setError("Something went wrong. Try again later.");
+      setError(
+        err.response?.data?.message || "Something went wrong. Try again later."
+      );
     }
   };
 
