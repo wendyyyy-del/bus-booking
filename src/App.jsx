@@ -10,6 +10,7 @@ import Buses from "./pages/Buses";
 import Bookings from "./pages/Bookings";
 import BookingForm from "./components/BookingForm";
 import NotFound from "./pages/NotFound";
+import Payment from "./pages/Payment"
 
 
 export default function App() {
@@ -90,6 +91,7 @@ export default function App() {
         <main className="flex-grow">
           <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/payment" element={<Payment />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route
