@@ -11,7 +11,7 @@ import Bookings from "./pages/Bookings";
 import BookingForm from "./components/BookingForm";
 import NotFound from "./pages/NotFound";
 import Payment from "./pages/Payment"
-
+import Profile from "./pages/Profile";
 
 export default function App() {
   const [buses, setBuses] = useState([
@@ -105,6 +105,7 @@ export default function App() {
               }
             />
             <Route path="/bookingform" element={<BookingForm />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </main>

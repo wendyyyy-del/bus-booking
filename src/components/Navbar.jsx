@@ -3,9 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const navigate = useNavigate();
-
-  const token = localStorage.getItem("token"); // Adjust if using Redux
-  // Removed role since it's not used
+  const token = localStorage.getItem("token");
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -14,21 +12,30 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-white bg-opacity-80 backdrop-blur-md shadow-lg py-4 px-8 flex justify-between items-center sticky top-0 z-50 animate-fade-in">
-      <h1 className="text-3xl font-extrabold text-blue-600 hover:animate-bounce-slow transform transition duration-700 ease-in-out cursor-pointer">
-        <Link to="/">BusBooking</Link>
-      </h1>
+    <nav className="fixed top-0 left-0 w-full z-50 bg-white/15 backdrop-blur-lg shadow-md py-2 px-6 flex justify-between items-center border-b border-white/10">
+      <div className="flex items-center space-x-3">
+        <h1 className="text-2xl font-extrabold text-orange-400 cursor-pointer drop-shadow-sm">
+          <Link to="/" className="flex items-center space-x-3">
+            <span>Matatu Galore</span>
+            <img
+              src="/logo2.jpg"
+              alt="Matatu Logo"
+              className="w-8 h-8 object-contain rounded-full"
+            />
+          </Link>
+        </h1>
+      </div>
 
-      <div className="flex gap-8">
+      <div className="flex gap-6 text-sm">
         <Link
           to="/"
-          className="relative text-gray-700 font-semibold transition-all duration-300 hover:text-blue-600 hover:scale-110 hover:tracking-widest"
+          className="text-orange-300 font-semibold transition duration-300 hover:text-orange-500"
         >
           Home
         </Link>
         <Link
           to="/buses"
-          className="relative text-gray-700 font-semibold transition-all duration-300 hover:text-blue-600 hover:scale-110 hover:tracking-widest"
+          className="text-orange-300 font-semibold transition duration-300 hover:text-orange-500"
         >
           Buses
         </Link>
@@ -36,14 +43,20 @@ export default function Navbar() {
         {token ? (
           <>
             <Link
+              to="/profile"
+              className="text-orange-300 font-semibold transition duration-300 hover:text-orange-500"
+            >
+              Profile
+            </Link>
+            <Link
               to="/bookings"
-              className="relative text-gray-700 font-semibold transition-all duration-300 hover:text-blue-600 hover:scale-110 hover:tracking-widest"
+              className="text-orange-300 font-semibold transition duration-300 hover:text-orange-500"
             >
               Bookings
             </Link>
             <button
               onClick={handleLogout}
-              className="relative text-red-500 font-semibold transition-all duration-300 hover:text-red-700 hover:scale-110 hover:tracking-widest"
+              className="text-red-400 font-semibold transition duration-300 hover:text-red-600"
             >
               Logout
             </button>
@@ -52,13 +65,13 @@ export default function Navbar() {
           <>
             <Link
               to="/login"
-              className="relative text-gray-700 font-semibold transition-all duration-300 hover:text-blue-600 hover:scale-110 hover:tracking-widest"
+              className="text-orange-300 font-semibold transition duration-300 hover:text-orange-500"
             >
               Login
             </Link>
             <Link
               to="/register"
-              className="relative text-gray-700 font-semibold transition-all duration-300 hover:text-blue-600 hover:scale-110 hover:tracking-widest"
+              className="text-orange-300 font-semibold transition duration-300 hover:text-orange-500"
             >
               Register
             </Link>
